@@ -1,0 +1,1 @@
+This project is dedicated to my study of NLP. I have developed a model myself, developed a mobile application as an interface, as well as a backend server.
