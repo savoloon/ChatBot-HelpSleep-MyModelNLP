@@ -40,14 +40,31 @@ class _ChatInputState extends State<ChatInput> {
         child: Row(
           children: [
             Expanded(
-              child: TextField(
-                controller: _textController,
-                enabled: !widget.isSending,
-                textInputAction: TextInputAction.send,
-                onSubmitted: (_) => _submit(),
-                decoration: const InputDecoration(
-                  hintText: 'Type your message...',
-                  border: OutlineInputBorder(),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: TextField(
+                  controller: _textController,
+                  enabled: !widget.isSending,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _submit(),
+                  decoration: const InputDecoration(
+                    hintText: 'Напиши сообщение о сне...',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                  ),
                 ),
               ),
             ),

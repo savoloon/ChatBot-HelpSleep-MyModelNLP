@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/features/chat/presentation/screens/chat_page.dart';
 
 class AppRouter {
   const AppRouter._();
 
-  static const String chatRoute = '/chat';
+  static const String rootRoute = '/';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case chatRoute:
-        return MaterialPageRoute<void>(
-          builder: (_) => const ChatPage(),
-          settings: settings,
-        );
-      default:
-        return MaterialPageRoute<void>(
-          builder: (_) => const ChatPage(),
-          settings: settings,
-        );
-    }
+    return MaterialPageRoute<void>(
+      builder: (_) => const Scaffold(
+        body: Center(
+          child: Text('Routing is handled by SleepHelperApp home widget.'),
+        ),
+      ),
+      settings: settings,
+    );
   }
 }

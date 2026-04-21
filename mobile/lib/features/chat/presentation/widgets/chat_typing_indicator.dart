@@ -15,7 +15,7 @@ class ChatTypingIndicator extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             color: theme.colorScheme.surfaceVariant,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
             'Sleep Helper печатает...',
