@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/core/app/authenticated_shell.dart';
 import 'package:mobile/core/theme/app_theme.dart';
 import 'package:mobile/features/auth/presentation/screens/auth_page.dart';
 import 'package:mobile/features/auth/presentation/screens/session_expired_page.dart';
 import 'package:mobile/features/auth/presentation/state/auth_controller.dart';
-import 'package:mobile/features/chat/presentation/screens/chat_page.dart';
 
 class SleepHelperApp extends StatefulWidget {
   const SleepHelperApp({super.key});
@@ -54,7 +54,7 @@ class _SleepHelperAppState extends State<SleepHelperApp> {
     }
 
     if (_authController.isAuthenticated) {
-      return ChatPage(authController: _authController);
+      return AuthenticatedShell(authController: _authController);
     }
 
     return AuthPage(controller: _authController);

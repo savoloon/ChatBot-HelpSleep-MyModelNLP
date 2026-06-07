@@ -8,10 +8,12 @@ import 'package:mobile/features/chat/presentation/widgets/chat_typing_indicator.
 class ChatPage extends StatefulWidget {
   const ChatPage({
     required this.authController,
+    this.onOpenInsights,
     super.key,
   });
 
   final AuthController authController;
+  final VoidCallback? onOpenInsights;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -52,6 +54,11 @@ class _ChatPageState extends State<ChatPage> {
                   : 'Sleep Chat',
             ),
             actions: [
+              IconButton(
+                tooltip: 'Sleep Insights',
+                onPressed: widget.onOpenInsights,
+                icon: const Icon(Icons.bar_chart_outlined),
+              ),
               IconButton(
                 tooltip: 'Logout',
                 onPressed: () => widget.authController.logout(),
@@ -204,13 +211,15 @@ class _SkeletonLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          alignRight ? MainAxisAlignment.end : MainAxisAlignment.start,
-      children: [
-        FractionallySizedBox(
-          widthFactor: widthFactor,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bubbleWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth * widthFactor
+            : 260 * widthFactor;
+        return Align(
+          alignment: alignRight ? Alignment.centerRight : Alignment.centerLeft,
           child: Container(
+            width: bubbleWidth,
             height: 54,
             margin: const EdgeInsets.symmetric(vertical: 6),
             decoration: BoxDecoration(
@@ -221,8 +230,8 @@ class _SkeletonLine extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }

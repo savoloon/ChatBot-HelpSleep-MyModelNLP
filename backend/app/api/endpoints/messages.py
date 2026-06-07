@@ -8,6 +8,7 @@ from app.schemas.message import MessageRequest, MessageResponse
 from app.services.chat_service import cleanup_old_messages, save_message
 from app.services.intent_service import intent_service
 from app.services.response_service import build_response
+from app.services.sleep_info_service import save_sleep_info_from_intent
 
 router = APIRouter(tags=["messages"])
 
@@ -32,6 +33,12 @@ def handle_message(
     response_text = build_response(intent_name=intent_name, message=clean_message)
     save_message(db=db, user_id=current_user.id, role_name="user", text=clean_message)
     save_message(db=db, user_id=current_user.id, role_name="assistant", text=response_text)
+    save_sleep_info_from_intent(
+        db=db,
+        user_id=current_user.id,
+        intent_name=intent_name,
+        message_text=clean_message,
+    )
 
     return MessageResponse(
         response=response_text,

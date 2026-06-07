@@ -10,7 +10,7 @@ from app.core.constants import (
 
 def build_response(intent_name: str, message: str) -> str:
     if intent_name == "sleep_duration_report":
-        hours = _extract_duration_hours(message)
+        hours = extract_duration_hours(message)
         if hours is None:
             return choice(INTENT_RESPONSES["sleep_duration_report"])
         duration_text = _format_duration(hours)
@@ -32,7 +32,7 @@ def build_response(intent_name: str, message: str) -> str:
         )
 
     if intent_name == "sleep_schedule_report":
-        schedule = _extract_schedule(message)
+        schedule = extract_schedule(message)
         if schedule is None:
             return choice(INTENT_RESPONSES["sleep_schedule_report"])
         category = _classify_schedule(
@@ -59,7 +59,7 @@ def build_response(intent_name: str, message: str) -> str:
     return choice(INTENT_RESPONSES.get(intent_name, INTENT_RESPONSES["other"]))
 
 
-def _extract_duration_hours(text: str) -> float | None:
+def extract_duration_hours(text: str) -> float | None:
     normalized = text.lower().replace(",", ".")
 
     hour_minute_pattern = re.search(
@@ -81,7 +81,7 @@ def _extract_duration_hours(text: str) -> float | None:
     return None
 
 
-def _extract_schedule(text: str) -> dict[str, float | int] | None:
+def extract_schedule(text: str) -> dict[str, float | int] | None:
     normalized = text.lower()
 
     range_match = re.search(
@@ -195,6 +195,10 @@ def _format_clock(total_minutes: int) -> str:
     hours = minutes_in_day // 60
     mins = minutes_in_day % 60
     return f"{hours:02d}:{mins:02d}"
+
+
+def format_schedule(bedtime_minutes: int, wake_minutes: int) -> str:
+    return f"{_format_clock(bedtime_minutes)} - {_format_clock(wake_minutes)}"
 
 
 def _duration_tip(category: str) -> str:

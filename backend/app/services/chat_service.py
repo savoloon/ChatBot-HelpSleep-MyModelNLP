@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
@@ -10,7 +10,7 @@ RETENTION_DAYS = 15
 
 
 def cleanup_old_messages(db: Session) -> None:
-    threshold = datetime.now(UTC) - timedelta(days=RETENTION_DAYS)
+    threshold = datetime.now(timezone.utc) - timedelta(days=RETENTION_DAYS)
     db.execute(delete(Message).where(Message.date < threshold))
     db.commit()
 
@@ -40,7 +40,7 @@ def get_user_history(
     )
 
     if days is not None:
-        cutoff = datetime.now(UTC) - timedelta(days=days)
+        cutoff = datetime.now(timezone.utc) - timedelta(days=days)
         stmt = stmt.where(Message.date >= cutoff)
 
     if limit is not None:

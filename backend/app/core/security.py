@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -6,7 +6,9 @@ from passlib.context import CryptContext
 from app.core.config import get_settings
 
 ALGORITHM = "HS256"
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Use PBKDF2-SHA256 to avoid bcrypt 72-byte password limit
+# and backend compatibility issues on some environments.
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 settings = get_settings()
 
 
@@ -23,7 +25,7 @@ def create_access_token(user_id: int) -> str:
     payload = {
         "sub": str(user_id),
         "type": "access",
-        "exp": datetime.now(UTC) + timedelta(seconds=expires_in_seconds),
+        "exp": datetime.now(timezone.utc) + timedelta(seconds=expires_in_seconds),
     }
     return jwt.encode(payload, settings.jwt_secret, algorithm=ALGORITHM)
 
@@ -33,7 +35,7 @@ def create_refresh_token(user_id: int) -> str:
     payload = {
         "sub": str(user_id),
         "type": "refresh",
-        "exp": datetime.now(UTC) + timedelta(seconds=expires_in_seconds),
+        "exp": datetime.now(timezone.utc) + timedelta(seconds=expires_in_seconds),
     }
     return jwt.encode(payload, settings.jwt_refresh_secret, algorithm=ALGORITHM)
 
