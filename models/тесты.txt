@@ -1,0 +1,1396 @@
+def preprocess(text):
+    doc = nlp(text)
+
+    filtered_tokens = []
+
+    for token in doc:
+        if token.is_stop or token.is_punct:
+            continue
+        filtered_tokens.append(token.lemma_)
+    return " ".join(filtered_tokens)
+
+def preprocess_new(text):
+    doc = nlp(text)
+
+    filtered_tokens = []
+
+    for token in doc:
+        if token.is_punct:
+            continue
+        filtered_tokens.append(token.lemma_)
+    return " ".join(filtered_tokens)
+
+МОДЕЛИ ОБУЧЕННЫЕ ЧЕРЕЗ CountVectorizer, но без preprocess
+1) clf_NB1
+clf_NB1 = Pipeline([
+    ('vectorizer_bow', CountVectorizer()),
+    ('Multi NV', MultinomialNB()),
+])
+clf_NB1.fit(X_train, y_train)
+y_pred = clf_NB1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+2) clf_NB2
+clf_NB2 = Pipeline([
+    ('vectorizer_bow', CountVectorizer(ngram_range=(1,2))),
+    ('Multi NV', MultinomialNB()),
+])
+clf_NB2.fit(X_train, y_train)
+y_pred = clf_NB2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+3) clf_NB3
+clf_NB3 = Pipeline([
+    ('vectorizer_bow', CountVectorizer(ngram_range=(1,3))),
+    ('Multi NV', MultinomialNB()),
+])
+clf_NB3.fit(X_train, y_train)
+y_pred = clf_NB3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+4) clf_KNE1
+clf_KNE1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+clf_KNE1.fit(X_train, y_train)
+y_pred = clf_KNE1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.96      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.79      1.00      0.88        26
+           4       1.00      0.78      0.88        27
+           5       0.93      0.93      0.93        27
+
+    accuracy                           0.94       160
+   macro avg       0.95      0.94      0.94       160
+weighted avg       0.95      0.94      0.94       160
+
+5) clf_KNE2
+clf_KNE2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+clf_KNE2.fit(X_train, y_train)
+y_pred = clf_KNE2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.70      0.83        27
+           1       1.00      0.96      0.98        27
+           2       1.00      0.92      0.96        26
+           3       0.52      1.00      0.68        26
+           4       1.00      0.70      0.83        27
+           5       0.91      0.74      0.82        27
+
+    accuracy                           0.84       160
+   macro avg       0.90      0.84      0.85       160
+weighted avg       0.91      0.84      0.85       160
+
+6) clf_KNE3
+clf_KNE3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+clf_KNE3.fit(X_train, y_train)
+y_pred = clf_KNE3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.41      0.58        27
+           1       1.00      0.96      0.98        27
+           2       1.00      0.23      0.38        26
+           3       0.28      1.00      0.44        26
+           4       1.00      0.33      0.50        27
+           5       0.94      0.56      0.70        27
+
+    accuracy                           0.58       160
+   macro avg       0.87      0.58      0.60       160
+weighted avg       0.87      0.58      0.60       160
+
+7) clf_KNC1
+clf_KNC1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+clf_KNC1.fit(X_train, y_train)
+y_pred = clf_KNC1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.96      0.98        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+8) clf_KNC2
+clf_KNC2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+clf_KNC2.fit(X_train, y_train)
+y_pred = clf_KNC2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.81      0.90        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+9) clf_KNC3
+clf_KNC3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+clf_KNC3.fit(X_train, y_train)
+y_pred = clf_KNC3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.81      0.90        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+10) clf_RF1
+clf_RF1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', RandomForestClassifier())
+])
+clf_RF1.fit(X_train, y_train)
+y_pred = clf_RF1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.87      1.00      0.93        26
+           4       1.00      0.93      0.96        27
+           5       0.96      0.89      0.92        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+11) clf_RF2
+clf_RF2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', RandomForestClassifier())
+])
+clf_RF2.fit(X_train, y_train)
+y_pred = clf_RF2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.84      1.00      0.91        26
+           4       1.00      0.89      0.94        27
+           5       0.96      0.89      0.92        27
+
+    accuracy                           0.96       160
+   macro avg       0.97      0.96      0.96       160
+weighted avg       0.97      0.96      0.96       160
+
+12) clf_RF3
+clf_RF3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', RandomForestClassifier())
+])
+clf_RF3.fit(X_train, y_train)
+y_pred = clf_RF3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.84      1.00      0.91        26
+           4       1.00      0.85      0.92        27
+           5       0.92      0.89      0.91        27
+
+    accuracy                           0.96       160
+   macro avg       0.96      0.96      0.96       160
+weighted avg       0.96      0.96      0.96       160
+
+-------------------- Итоги по моделям обученным через CountVectorizer, но без preprocess --------------------
+    model	accuracy	macro_f1	weighted_f1
+0	clf_NB2	0.9722	0.9727	0.9727
+1	clf_NB3	0.9722	0.9727	0.9727
+2	clf_NB1	0.9583	0.9581	0.9581
+3	clf_KNC1	0.9583	0.9581	0.9581
+4	clf_KNC2	0.9444	0.9435	0.9435
+5	clf_KNC3	0.9444	0.9435	0.9435
+6	clf_RF1	0.9306	0.9289	0.9289
+7	clf_RF2	0.9028	0.9008	0.9008
+8	clf_RF3	0.8889	0.8857	0.8857
+9	clf_KNE1	0.7222	0.6790	0.6790
+10	clf_KNE2	0.4722	0.4605	0.4605
+11	clf_KNE3	0.3194	0.2765	0.2765
+Лучшая модель: clf_NB2
+                       precision    recall  f1-score   support
+         insomnia_now     1.0000    0.9167    0.9565        12
+sleep_duration_report     1.0000    1.0000    1.0000        12
+sleep_schedule_report     0.8571    1.0000    0.9231        12
+              welcome     1.0000    1.0000    1.0000        12
+                other     1.0000    0.9167    0.9565        12
+              goodbye     1.0000    1.0000    1.0000        12
+             accuracy                         0.9722        72
+            macro avg     0.9762    0.9722    0.9727        72
+         weighted avg     0.9762    0.9722    0.9727        72
+Ошибок: 2 из 72 на тестовом датасете специальном
+text	intent	pred_intent
+0	проснулся среди ночи и больше не уснул	insomnia_now	sleep_schedule_report
+1	подскажи рецепт омлета	other	sleep_schedule_report
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+МОДЕЛИ ОБУЧЕННЫЕ ЧЕРЕЗ CountVectorizer, но с preprocess
+1) pclf_NB1
+pclf_NB1 = Pipeline([
+    ('vectorizer_bow', CountVectorizer()),
+    ('Multi NV', MultinomialNB()),
+])
+pclf_NB1.fit(X_train, y_train)
+y_pred = pclf_NB1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.96      0.98        27
+           1       0.96      1.00      0.98        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+2) pclf_NB2
+pclf_NB2 = Pipeline([
+    ('vectorizer_bow', CountVectorizer(ngram_range=(1,2))),
+    ('Multi NV', MultinomialNB()),
+])
+pclf_NB2.fit(X_train, y_train)
+y_pred = pclf_NB2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.96      0.98        27
+           1       0.96      1.00      0.98        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+3) pclf_NB3
+pclf_NB3 = Pipeline([
+    ('vectorizer_bow', CountVectorizer(ngram_range=(1,3))),
+    ('Multi NV', MultinomialNB()),
+])
+pclf_NB3.fit(X_train, y_train)
+y_pred = pclf_NB3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.96      0.98        27
+           1       0.96      1.00      0.98        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+4) pclf_KNE1
+pclf_KNE1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclf_KNE1.fit(X_train, y_train)
+y_pred = pclf_KNE1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.78      0.88        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.59      0.74        27
+           5       0.61      1.00      0.76        27
+
+    accuracy                           0.89       160
+   macro avg       0.94      0.90      0.90       160
+weighted avg       0.93      0.89      0.90       160
+
+5) pclf_KNE2
+pclf_KNE2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclf_KNE2.fit(X_train, y_train)
+y_pred = pclf_KNE2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.30      0.46        27
+           1       1.00      1.00      1.00        27
+           2       1.00      0.62      0.76        26
+           3       0.88      0.88      0.88        26
+           4       1.00      0.63      0.77        27
+           5       0.41      1.00      0.58        27
+
+    accuracy                           0.74       160
+   macro avg       0.88      0.74      0.74       160
+weighted avg       0.88      0.74      0.74       160
+
+6) pclf_KNE3
+pclf_KNE3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclf_KNE3.fit(X_train, y_train)
+y_pred = pclf_KNE3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.07      0.14        27
+           1       1.00      0.96      0.98        27
+           2       1.00      0.08      0.14        26
+           3       0.86      0.73      0.79        26
+           4       1.00      0.44      0.62        27
+           5       0.28      1.00      0.44        27
+
+    accuracy                           0.55       160
+   macro avg       0.86      0.55      0.52       160
+weighted avg       0.86      0.55      0.52       160
+
+7) pclf_KNC1
+pclf_KNC1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclf_KNC1.fit(X_train, y_train)
+y_pred = pclf_KNC1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.96      1.00      0.98        26
+           4       1.00      0.81      0.90        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+8) pclf_KNC2
+pclf_KNC2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclf_KNC2.fit(X_train, y_train)
+y_pred = pclf_KNC2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.96      1.00      0.98        26
+           4       1.00      0.81      0.90        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+9) pclf_KNC3
+pclf_KNC3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclf_KNC3.fit(X_train, y_train)
+y_pred = pclf_KNC3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.96      1.00      0.98        26
+           4       1.00      0.81      0.90        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+10) pclf_RF1
+pclf_RF1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', RandomForestClassifier())
+])
+pclf_RF1.fit(X_train, y_train)
+y_pred = pclf_RF1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      0.96      0.98        26
+           4       1.00      0.93      0.96        27
+           5       0.90      1.00      0.95        27
+
+    accuracy                           0.98       160
+   macro avg       0.98      0.98      0.98       160
+weighted avg       0.98      0.98      0.98       160
+
+11) pclf_RF2
+pclf_RF2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', RandomForestClassifier())
+])
+pclf_RF2.fit(X_train, y_train)
+y_pred = pclf_RF2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      0.96      0.98        26
+           4       1.00      0.93      0.96        27
+           5       0.90      1.00      0.95        27
+
+    accuracy                           0.98       160
+   macro avg       0.98      0.98      0.98       160
+weighted avg       0.98      0.98      0.98       160
+
+12) pclf_RF3
+pclf_RF3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', RandomForestClassifier())
+])
+pclf_RF3.fit(X_train, y_train)
+y_pred = pclf_RF3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      0.96      0.98        26
+           4       1.00      0.93      0.96        27
+           5       0.90      1.00      0.95        27
+
+    accuracy                           0.98       160
+   macro avg       0.98      0.98      0.98       160
+weighted avg       0.98      0.98      0.98       160
+
+-------------------- Итоги по моделям обученным через CountVectorizer с preprocess --------------------
+ 	 model	  accuracy	macro_f1	weighted_f1
+0	pclf_KNC2	0.7083	 0.7048	 0.7048
+1	pclf_KNC3	0.6944	 0.6953	 0.6953
+2	pclf_NB2	   0.6944	 0.6813	 0.6813
+3	pclf_NB3	   0.6944	 0.6813	 0.6813
+4	pclf_KNC1	0.6806	 0.6789	 0.6789
+5	pclf_NB1	   0.6806	 0.6574	 0.6574
+6	pclf_RF1	   0.5556	 0.5230	 0.5230
+7	pclf_RF2	   0.5278	 0.4878	 0.4878
+8	pclf_RF3	   0.5278	 0.4878	 0.4878
+9	pclf_KNE1	0.3889	 0.3557	 0.3557
+10	pclf_KNE2	0.2917	 0.2123	 0.2123
+11	pclf_KNE3	0.2778	 0.2011	 0.2011
+
+Лучшая модель: pclf_KNC2
+                       precision    recall  f1-score   support
+         insomnia_now     0.8333    0.4167    0.5556        12
+sleep_duration_report     0.3810    0.6667    0.4848        12
+sleep_schedule_report     0.8571    1.0000    0.9231        12
+              welcome     0.9231    1.0000    0.9600        12
+                other     0.8333    0.4167    0.5556        12
+              goodbye     0.7500    0.7500    0.7500        12
+             accuracy                         0.7083        72
+            macro avg     0.7630    0.7083    0.7048        72
+         weighted avg     0.7630    0.7083    0.7048        72
+Ошибок: 21 из 72 на специальном тестовом датасете
+                  text	                     intent	      pred_intent
+0	проснулся среди ночи и больше не уснул	insomnia_now	sleep_duration_report
+1	помоги, пожалуйста, я никак не засыпаю	insomnia_now	sleep_duration_report
+2	время позднее, а я все еще бодрствую	insomnia_now	other
+3	после тяжелого дня не получается отключиться	insomnia_now	sleep_schedule_report
+4	в кровати уже давно, а сна нет совсем	insomnia_now	sleep_duration_report
+5	опять бессонная ночь, не могу уснуть	insomnia_now	sleep_duration_report
+6	не засыпаю уже второй час подряд	insomnia_now	sleep_duration_report
+7	сегодня набралось только 4 часа сна	sleep_duration_report	goodbye
+8	мой сон длился около 8 часов	sleep_duration_report	insomnia_now
+9	по трекеру получилось 5 часов 20 минут	sleep_duration_report	sleep_schedule_report
+10	сегодня сна было около 7 часов	sleep_duration_report	goodbye
+11	покажи погоду на сегодня	other	goodbye
+12	сколько сейчас времени в берлине	other	sleep_duration_report
+13	переведи фразу good morning	other	sleep_duration_report
+14	добавь напоминание на вечер	other	welcome
+15	расскажи короткую шутку	other	sleep_duration_report
+16	найди ближайшую аптеку	other	sleep_duration_report
+17	подскажи рецепт омлета	other	sleep_duration_report
+18	до связи, продолжим позже	goodbye	sleep_duration_report
+19	прощаемся до следующего раза	goodbye	sleep_duration_report
+20	мне пора, завершаю беседу	goodbye	sleep_duration_report
+
+------------------------------------------------------------------------------------------------------------------------
+
+МОДЕЛИ ОБУЧЕННЫЕ ЧЕРЕЗ COUTVECTORIZER после Preprocess_new с stop словами
+1) pclfn_NB1
+pclfn_NB1 = Pipeline([
+    ('vectorizer_bow', CountVectorizer()),
+    ('Multi NV', MultinomialNB()),
+])
+pclfn_NB1.fit(X_train, y_train)
+y_pred = pclfn_NB1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+2) pclfn_NB2
+pclfn_NB2 = Pipeline([
+    ('vectorizer_bow', CountVectorizer(ngram_range=(1,2))),
+    ('Multi NV', MultinomialNB()),
+])
+pclfn_NB2.fit(X_train, y_train)
+y_pred = pclfn_NB2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+3) pclfn_NB3
+pclfn_NB3 = Pipeline([
+    ('vectorizer_bow', CountVectorizer(ngram_range=(1,3))),
+    ('Multi NV', MultinomialNB()),
+])
+pclfn_NB3.fit(X_train, y_train)
+y_pred = pclfn_NB3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+4) pclfn_KNE1
+pclfn_KNE1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclfn_KNE1.fit(X_train, y_train)
+y_pred = pclfn_KNE1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.96      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.76      1.00      0.87        26
+           4       1.00      0.74      0.85        27
+           5       0.93      0.93      0.93        27
+
+    accuracy                           0.94       160
+   macro avg       0.95      0.94      0.94       160
+weighted avg       0.95      0.94      0.94       160
+
+5) pclfn_KNE2
+pclfn_KNE2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclfn_KNE2.fit(X_train, y_train)
+y_pred = pclfn_KNE2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.81      0.90        27
+           1       1.00      1.00      1.00        27
+           2       1.00      0.92      0.96        26
+           3       0.54      1.00      0.70        26
+           4       1.00      0.63      0.77        27
+           5       0.91      0.74      0.82        27
+
+    accuracy                           0.85       160
+   macro avg       0.91      0.85      0.86       160
+weighted avg       0.91      0.85      0.86       160
+
+6) pclfn_KNE3
+pclfn_KNE3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclfn_KNE3.fit(X_train, y_train)
+y_pred = pclfn_KNE3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.37      0.54        27
+           1       1.00      1.00      1.00        27
+           2       1.00      0.23      0.38        26
+           3       0.28      1.00      0.44        26
+           4       1.00      0.33      0.50        27
+           5       0.94      0.56      0.70        27
+
+    accuracy                           0.58       160
+   macro avg       0.87      0.58      0.59       160
+weighted avg       0.87      0.58      0.59       160
+
+7) pclfn_KNC1
+pclfn_KNC1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclfn_KNC1.fit(X_train, y_train)
+y_pred = pclfn_KNC1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.96      0.98        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+8) pclfn_KNC2
+pclfn_KNC2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclfn_KNC2.fit(X_train, y_train)
+y_pred = pclfn_KNC2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.81      0.90        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+9) pclfn_KNC3
+pclfn_KNC3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclfn_KNC3.fit(X_train, y_train)
+y_pred = pclfn_KNC3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       0.96      1.00      0.98        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.81      0.90        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.97       160
+   macro avg       0.97      0.97      0.97       160
+weighted avg       0.97      0.97      0.97       160
+
+
+10) pclfn_RF1
+pclfn_RF1 = Pipeline([
+    ('vectorizer', CountVectorizer()),
+    ('rf', RandomForestClassifier())
+])
+pclfn_RF1.fit(X_train, y_train)
+y_pred = pclfn_RF1.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.81      1.00      0.90        26
+           4       1.00      0.89      0.94        27
+           5       1.00      0.89      0.94        27
+
+    accuracy                           0.96       160
+   macro avg       0.97      0.96      0.96       160
+weighted avg       0.97      0.96      0.96       160
+
+11) pclfn_RF2
+pclfn_RF2 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,2))),
+    ('rf', RandomForestClassifier())
+])
+pclfn_RF2.fit(X_train, y_train)
+y_pred = pclfn_RF2.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.81      1.00      0.90        26
+           4       1.00      0.85      0.92        27
+           5       0.96      0.89      0.92        27
+
+    accuracy                           0.96       160
+   macro avg       0.96      0.96      0.96       160
+weighted avg       0.96      0.96      0.96       160
+
+12) pclfn_RF3
+pclfn_RF3 = Pipeline([
+    ('vectorizer', CountVectorizer(ngram_range=(1,3))),
+    ('rf', RandomForestClassifier())
+])
+pclfn_RF3.fit(X_train, y_train)
+y_pred = pclfn_RF3.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.81      1.00      0.90        26
+           4       1.00      0.85      0.92        27
+           5       0.96      0.89      0.92        27
+
+    accuracy                           0.96       160
+   macro avg       0.96      0.96      0.96       160
+weighted avg       0.96      0.96      0.96       160
+
+-------------------- Итоги по моделям обученным через CountVectorizer с preprocess_new --------------------
+ 	  model	  accuracy	macro_f1	weighted_f1
+0	pclfn_NB3	0.8750	0.8731	0.8731
+1	pclfn_NB1	0.8750	0.8730	0.8730
+2	pclfn_NB2	0.8750	0.8730	0.8730
+3	pclfn_KNC1	0.8472	0.8474	0.8474
+4	pclfn_KNC2	0.8472	0.8447	0.8447
+5	pclfn_KNC3	0.8333	0.8314	0.8314
+6	pclfn_RF3	0.6944	0.6891	0.6891
+7	pclfn_RF1	0.6806	0.6786	0.6786
+8	pclfn_RF2	0.6667	0.6597	0.6597
+9	pclfn_KNE1	0.4583	0.4354	0.4354
+10	pclfn_KNE2	0.2500	0.1702	0.1702
+11	pclfn_KNE3	0.1944	0.0964	0.0964
+Лучшая модель: pclfn_NB3
+                       precision    recall  f1-score   support
+         insomnia_now     0.9091    0.8333    0.8696        12
+sleep_duration_report     1.0000    0.8333    0.9091        12
+sleep_schedule_report     0.6667    1.0000    0.8000        12
+              welcome     1.0000    1.0000    1.0000        12
+                other     1.0000    0.5833    0.7368        12
+              goodbye     0.8571    1.0000    0.9231        12
+             accuracy                         0.8750        72
+            macro avg     0.9055    0.8750    0.8731        72
+         weighted avg     0.9055    0.8750    0.8731        72
+Ошибок: 9 из 72 на  специальном тестовом датасете
+text	intent	pred_intent
+0	время позднее, а я все еще бодрствую	insomnia_now	goodbye
+1	в кровати уже давно, а сна нет совсем	insomnia_now	sleep_schedule_report
+2	по трекеру получилось 5 часов 20 минут	sleep_duration_report	sleep_schedule_report
+3	этой ночью проспал почти 9 часов	sleep_duration_report	insomnia_now
+4	покажи погоду на сегодня	other	goodbye
+5	переведи фразу good morning	other	sleep_schedule_report
+6	расскажи короткую шутку	other	sleep_schedule_report
+7	найди ближайшую аптеку	other	sleep_schedule_report
+8	подскажи рецепт омлета	other	sleep_schedule_report
+
+
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------  ОБЩИЙ ВЫВОД ПО CountVectorizer -----------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+    model	  accuracy	macro_f1	weighted_f1
+0	clf_NB2	   0.9722	0.9727	0.9727
+1	clf_NB3	   0.9722	0.9727	0.9727
+2	clf_NB1	   0.9583	0.9581	0.9581
+3	clf_KNC1	   0.9583	0.9581	0.9581
+4	clf_KNC2	   0.9444	0.9435	0.9435
+5	clf_KNC3	   0.9444	0.9435	0.9435
+6	clf_RF1	   0.9306	0.9289	0.9289
+7	clf_RF2	   0.9028	0.9008	0.9008
+8	clf_RF3	   0.8889	0.8857	0.8857
+9	pclfn_NB3	0.8750	0.8731	0.8731
+10	pclfn_NB1	0.8750	0.8730	0.8730
+11	pclfn_NB2	0.8750	0.8730	0.8730
+12	pclfn_KNC1	0.8472	0.8474	0.8474
+13	pclfn_KNC2	0.8472	0.8447	0.8447
+14	pclfn_KNC3	0.8333	0.8314	0.8314
+15	pclf_KNC2	0.7083	0.7048	0.7048
+16	pclf_KNC3	0.6944	0.6953	0.6953
+17	pclfn_RF3	0.6944	0.6891	0.6891
+18	pclf_NB2	   0.6944	0.6813	0.6813
+19	pclf_NB3	   0.6944	0.6813	0.6813
+20	clf_KNE1	   0.7222	0.6790	0.6790
+21	pclf_KNC1	0.6806	0.6789	0.6789
+22	pclfn_RF1	0.6806	0.6786	0.6786
+23	pclfn_RF2	0.6667	0.6597	0.6597
+24	pclf_NB1	   0.6806	0.6574	0.6574
+25	pclf_RF1	   0.5556	0.5230	0.5230
+26	pclf_RF2	   0.5278	0.4878	0.4878
+27	pclf_RF3	   0.5278	0.4878	0.4878
+28	clf_KNE2	   0.4722	0.4605	0.4605
+29	pclfn_KNE1	0.4583	0.4354	0.4354
+30	pclf_KNE1	0.3889	0.3557	0.3557
+31	clf_KNE3	   0.3194	0.2765	0.2765
+32	pclf_KNE2	0.2917	0.2123	0.2123
+33	pclf_KNE3	0.2778	0.2011	0.2011
+34	pclfn_KNE2	0.2500	0.1702	0.1702
+35	pclfn_KNE3	0.1944	0.0964	0.0964
+Лучшая модель: clf_NB2
+
+------------------------------------------------------------------------------------------------------------------------
+
+
+МОДЕЛИ ОБУЧЕННЫЕ ЧЕРЕЗ TFIDVectorizer
+1) clf_NB1T
+clf_NB1T = Pipeline([
+    ('vectorizer_bow', TfidfVectorizer()),
+    ('Multi NV', MultinomialNB()),
+])
+clf_NB1T.fit(X_train, y_train)
+y_pred = clf_NB1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+2) clf_KNE1T
+clf_KNE1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+clf_KNE1T.fit(X_train, y_train)
+y_pred = clf_KNE1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       0.93      1.00      0.96        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.89      0.94        27
+           5       0.93      0.96      0.95        27
+
+    accuracy                           0.97       160
+   macro avg       0.98      0.98      0.98       160
+weighted avg       0.98      0.97      0.97       160
+
+3) clf_KNC1T
+clf_KNC1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+clf_KNC1T.fit(X_train, y_train)
+y_pred = clf_KNC1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.93      0.96        27
+           5       0.93      1.00      0.96        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+4) clf_RF1T
+clf_RF1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', RandomForestClassifier())
+])
+clf_RF1T.fit(X_train, y_train)
+y_pred = clf_RF1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.84      1.00      0.91        26
+           4       1.00      0.89      0.94        27
+           5       0.96      0.89      0.92        27
+
+    accuracy                           0.96       160
+   macro avg       0.97      0.96      0.96       160
+weighted avg       0.97      0.96      0.96       160
+
+-------------------- Итоги по моделям обученным через TFIDVectorizer --------------------
+ 	 model	  accuracy	macro_f1	weighted_f1
+0	clf_NB1T	   0.9722	0.9727	0.9727
+1	clf_KNC1T	0.9583	0.9581	0.9581
+2	clf_KNE1T	0.9167	0.9161	0.9161
+3	clf_RF1T	   0.8889	0.8856	0.8856
+Лучшая модель: clf_NB1T
+                       precision    recall  f1-score   support
+         insomnia_now     1.0000    0.9167    0.9565        12
+sleep_duration_report     1.0000    1.0000    1.0000        12
+sleep_schedule_report     0.8571    1.0000    0.9231        12
+              welcome     1.0000    1.0000    1.0000        12
+                other     1.0000    0.9167    0.9565        12
+              goodbye     1.0000    1.0000    1.0000        12
+             accuracy                         0.9722        72
+            macro avg     0.9762    0.9722    0.9727        72
+         weighted avg     0.9762    0.9722    0.9727        72
+Ошибок: 2 из 72
+text	intent	pred_intent
+0	проснулся среди ночи и больше не уснул	insomnia_now	sleep_schedule_report
+1	подскажи рецепт омлета	other	sleep_schedule_report
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+МОДЕЛИ ОБУЧЕННЫЕ ЧЕРЕЗ TFIDVectorizer с Preprocess
+1) pclf_NB1T
+pclf_NB1T = Pipeline([
+    ('vectorizer_bow', TfidfVectorizer()),
+    ('Multi NV', MultinomialNB()),
+])
+pclf_NB1T.fit(X_train, y_train)
+y_pred = pclf_NB1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.96      0.98        27
+           1       0.96      1.00      0.98        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+2) pclf_KNE1T
+pclf_KNE1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclf_KNE1T.fit(X_train, y_train)
+y_pred = pclf_KNE1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.93      0.96        27
+           1       0.96      1.00      0.98        27
+           2       1.00      1.00      1.00        26
+           3       0.96      1.00      0.98        26
+           4       1.00      0.85      0.92        27
+           5       0.87      1.00      0.93        27
+
+    accuracy                           0.96       160
+   macro avg       0.97      0.96      0.96       160
+weighted avg       0.97      0.96      0.96       160
+
+3) pclf_KNC1T
+pclf_KNC1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclf_KNC1T.fit(X_train, y_train)
+y_pred = pclf_KNC1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      0.96      0.98        27
+           1       0.96      1.00      0.98        27
+           2       1.00      1.00      1.00        26
+           3       0.96      1.00      0.98        26
+           4       1.00      0.89      0.94        27
+           5       0.93      1.00      0.96        27
+
+    accuracy                           0.97       160
+   macro avg       0.98      0.98      0.97       160
+weighted avg       0.98      0.97      0.97       160
+
+4) pclf_RF1T
+pclf_RF1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', RandomForestClassifier())
+])
+pclf_RF1T.fit(X_train, y_train)
+y_pred = pclf_RF1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      0.96      0.98        26
+           4       1.00      0.93      0.96        27
+           5       0.90      1.00      0.95        27
+
+    accuracy                           0.98       160
+   macro avg       0.98      0.98      0.98       160
+weighted avg       0.98      0.98      0.98       160
+
+-------------------- Итоги по моделям обученным через TFIDVectorizer c Preprocess --------------------
+ 	model	     accuracy	macro_f1	weighted_f1
+0	pclf_NB1T	0.6806	0.6582	0.6582
+1	pclf_KNC1T	0.6667	0.6473	0.6473
+2	pclf_KNE1T	0.6667	0.6423	0.6423
+3	pclf_RF1T	0.5694	0.5497	0.5497
+Лучшая модель: pclf_NB1T
+                       precision    recall  f1-score   support
+         insomnia_now     1.0000    0.1667    0.2857        12
+sleep_duration_report     0.6667    0.6667    0.6667        12
+sleep_schedule_report     0.4444    1.0000    0.6154        12
+              welcome     1.0000    1.0000    1.0000        12
+                other     0.8571    0.5000    0.6316        12
+              goodbye     0.7500    0.7500    0.7500        12
+             accuracy                         0.6806        72
+            macro avg     0.7864    0.6806    0.6582        72
+         weighted avg     0.7864    0.6806    0.6582        72
+Ошибок: 23 из 72 по специальному датасету
+text	intent	pred_intent
+0	сегодня снова не могу провалиться в сон	insomnia_now	sleep_duration_report
+1	проснулся среди ночи и больше не уснул	insomnia_now	sleep_schedule_report
+2	в голове шум и из-за этого не получается уснуть	insomnia_now	sleep_schedule_report
+3	помоги, пожалуйста, я никак не засыпаю	insomnia_now	sleep_schedule_report
+4	очень хочу спать, но сон вообще не приходит	insomnia_now	sleep_duration_report
+5	время позднее, а я все еще бодрствую	insomnia_now	other
+6	после тяжелого дня не получается отключиться	insomnia_now	sleep_schedule_report
+7	в кровати уже давно, а сна нет совсем	insomnia_now	sleep_schedule_report
+8	опять бессонная ночь, не могу уснуть	insomnia_now	sleep_duration_report
+9	не засыпаю уже второй час подряд	insomnia_now	sleep_duration_report
+10	сегодня набралось только 4 часа сна	sleep_duration_report	goodbye
+11	по трекеру получилось 5 часов 20 минут	sleep_duration_report	sleep_schedule_report
+12	этой ночью проспал почти 9 часов	sleep_duration_report	sleep_schedule_report
+13	сегодня сна было около 7 часов	sleep_duration_report	goodbye
+14	покажи погоду на сегодня	other	goodbye
+15	сколько сейчас времени в берлине	other	sleep_schedule_report
+16	переведи фразу good morning	other	sleep_schedule_report
+17	расскажи короткую шутку	other	sleep_schedule_report
+18	найди ближайшую аптеку	other	sleep_schedule_report
+19	подскажи рецепт омлета	other	sleep_schedule_report
+20	до связи, продолжим позже	goodbye	sleep_schedule_report
+21	прощаемся до следующего раза	goodbye	sleep_schedule_report
+22	мне пора, завершаю беседу	goodbye	sleep_schedule_report
+
+
+------------------------------------------------------------------------------------------------------------------------
+
+МОДЕЛИ ОБУЧЕННЫЕ ЧЕРЕЗ TFIDVectorizer с Preprocess
+1) pclfn_NB1T
+pclfn_NB1T = Pipeline([
+    ('vectorizer_bow', TfidfVectorizer()),
+    ('Multi NV', MultinomialNB()),
+])
+pclfn_NB1T.fit(X_train, y_train)
+y_pred = pclfn_NB1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      1.00      1.00        27
+           5       1.00      1.00      1.00        27
+
+    accuracy                           1.00       160
+   macro avg       1.00      1.00      1.00       160
+weighted avg       1.00      1.00      1.00       160
+
+2) pclfn_KNE1T
+pclfn_KNE1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='euclidean'))
+])
+pclfn_KNE1T.fit(X_train, y_train)
+y_pred = pclfn_KNE1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       0.90      1.00      0.95        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.85      0.92        27
+           5       0.96      1.00      0.98        27
+
+    accuracy                           0.97       160
+   macro avg       0.98      0.98      0.97       160
+weighted avg       0.98      0.97      0.97       160
+
+3) pclfn_KNC1T
+pclfn_KNC1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', KNeighborsClassifier(n_neighbors=10, metric='cosine'))
+])
+pclfn_KNC1T.fit(X_train, y_train)
+y_pred = pclfn_KNC1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       1.00      1.00      1.00        26
+           4       1.00      0.96      0.98        27
+           5       0.96      1.00      0.98        27
+
+    accuracy                           0.99       160
+   macro avg       0.99      0.99      0.99       160
+weighted avg       0.99      0.99      0.99       160
+
+4) pclfn_RF1T
+pclfn_RF1T = Pipeline([
+    ('vectorizer', TfidfVectorizer()),
+    ('rf', RandomForestClassifier())
+])
+pclfn_RF1T.fit(X_train, y_train)
+y_pred = pclfn_RF1T.predict(X_test)
+print(classification_report(y_test, y_pred))
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        27
+           1       1.00      1.00      1.00        27
+           2       1.00      1.00      1.00        26
+           3       0.81      1.00      0.90        26
+           4       1.00      0.85      0.92        27
+           5       0.96      0.89      0.92        27
+
+    accuracy                           0.96       160
+   macro avg       0.96      0.96      0.96       160
+weighted avg       0.96      0.96      0.96       160
+
+-------------------- Итоги по моделям обученным через TFIDVectorizer c Preprocess_new --------------------
+ 	model	      accuracy	macro_f1	weighted_f1
+0	pclfn_NB1T	0.8750	0.8731	0.8731
+1	pclfn_KNE1T	0.8750	0.8708	0.8708
+2	pclfn_KNC1T	0.8611	0.8573	0.8573
+3	pclfn_RF1T	0.7778	0.7749	0.7749
+Лучшая модель: pclfn_NB1T
+                       precision    recall  f1-score   support
+         insomnia_now     0.9091    0.8333    0.8696        12
+sleep_duration_report     1.0000    0.8333    0.9091        12
+sleep_schedule_report     0.6667    1.0000    0.8000        12
+              welcome     1.0000    1.0000    1.0000        12
+                other     1.0000    0.5833    0.7368        12
+              goodbye     0.8571    1.0000    0.9231        12
+             accuracy                         0.8750        72
+            macro avg     0.9055    0.8750    0.8731        72
+         weighted avg     0.9055    0.8750    0.8731        72
+Ошибок: 9 из 72 по специальному датасету
+text	intent	pred_intent
+0	время позднее, а я все еще бодрствую	insomnia_now	goodbye
+1	в кровати уже давно, а сна нет совсем	insomnia_now	sleep_schedule_report
+2	по трекеру получилось 5 часов 20 минут	sleep_duration_report	sleep_schedule_report
+3	этой ночью проспал почти 9 часов	sleep_duration_report	insomnia_now
+4	покажи погоду на сегодня	other	goodbye
+5	переведи фразу good morning	other	sleep_schedule_report
+6	расскажи короткую шутку	other	sleep_schedule_report
+7	найди ближайшую аптеку	other	sleep_schedule_report
+8	подскажи рецепт омлета	other	sleep_schedule_report
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+----------------------------------------  ОБЩИЙ ВЫВОД ПО TFIDVectorizer ------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+ 	model	     accuracy	macro_f1	weighted_f1
+0	clf_NB1T	   0.9722	0.9727	0.9727
+1	clf_KNC1T	0.9583	0.9581	0.9581
+2	clf_KNE1T	0.9167	0.9161	0.9161
+3	clf_RF1T	   0.8889	0.8856	0.8856
+4	pclfn_NB1T	0.8750	0.8731	0.8731
+5	pclfn_KNE1T	0.8750	0.8708	0.8708
+6	pclfn_KNC1T	0.8611	0.8573	0.8573
+7	pclfn_RF1T	0.7778	0.7749	0.7749
+8	pclf_NB1T	0.6806	0.6582	0.6582
+9	pclf_KNC1T	0.6667	0.6473	0.6473
+10	pclf_KNE1T	0.6667	0.6423	0.6423
+11	pclf_RF1T	0.5694	0.5497	0.5497
+Лучшая модель: clf_NB1T
+
+
+
+------------------------------------------------------------------------------------------------------------------------
+---------------------------------  ОБЩИЙ ВЫВОД ПО ВСЕМ МОДЕЛЯМ МАШИННОГО ОБУЧЕНИЯ --------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+	 model	       accuracy	macro_f1	weighted_f1
+0	clf_NB2	       0.9722	0.9727	0.9727
+1	clf_NB3	       0.9722	0.9727	0.9727
+2	clf_NB1T	   0.9722	0.9727	0.9727
+3	clf_NB1	       0.9583	0.9581	0.9581
+4	clf_KNC1	   0.9583	0.9581	0.9581
+5	clf_KNC1T	   0.9583	0.9581	0.9581
+6	clf_KNC2	   0.9444	0.9435	0.9435
+7	clf_KNC3	   0.9444	0.9435	0.9435
+8	clf_RF1	       0.9306	0.9289	0.9289
+9	clf_KNE1T	   0.9167	0.9161	0.9161
+10	clf_RF2	       0.9028	0.9008	0.9008
+11	clf_RF3	       0.8889	0.8857	0.8857
+12	clf_RF1T	   0.8889	0.8856	0.8856
+13	pclfn_NB3	   0.8750	0.8731	0.8731
+14	pclfn_NB1T	   0.8750	0.8731	0.8731
+15	pclfn_NB1	   0.8750	0.8730	0.8730
+16	pclfn_NB2	   0.8750	0.8730	0.8730
+17	pclfn_KNE1T	   0.8750	0.8708	0.8708
+18	pclfn_KNC1T	   0.8611	0.8573	0.8573
+19	pclfn_KNC1	   0.8472	0.8474	0.8474
+20	pclfn_KNC2	   0.8472	0.8447	0.8447
+21	pclfn_KNC3	   0.8333	0.8314	0.8314
+22	pclfn_RF1T	   0.7778	0.7749	0.7749
+23	pclf_KNC2	   0.7083	0.7048	0.7048
+24	pclf_KNC3	   0.6944	0.6953	0.6953
+25	pclfn_RF3	   0.6944	0.6891	0.6891
+26	pclf_NB2	   0.6944	0.6813	0.6813
+27	pclf_NB3	   0.6944	0.6813	0.6813
+28	clf_KNE1	   0.7222	0.6790	0.6790
+29	pclf_KNC1	   0.6806	0.6789	0.6789
+30	pclfn_RF1	   0.6806	0.6786	0.6786
+31	pclfn_RF2	   0.6667	0.6597	0.6597
+32	pclf_NB1T	   0.6806	0.6582	0.6582
+33	pclf_NB1	   0.6806	0.6574	0.6574
+34	pclf_KNC1T	   0.6667	0.6473	0.6473
+35	pclf_KNE1T	   0.6667	0.6423	0.6423
+36	pclf_RF1T	   0.5694	0.5497	0.5497
+37	pclf_RF1	   0.5556	0.5230	0.5230
+38	pclf_RF2	   0.5278	0.4878	0.4878
+39	pclf_RF3	   0.5278	0.4878	0.4878
+40	clf_KNE2	   0.4722	0.4605	0.4605
+41	pclfn_KNE1	   0.4583	0.4354	0.4354
+42	pclf_KNE1	   0.3889	0.3557	0.3557
+43	clf_KNE3	   0.3194	0.2765	0.2765
+44	pclf_KNE2	   0.2917	0.2123	0.2123
+45	pclf_KNE3	   0.2778	0.2011	0.2011
+46	pclfn_KNE2	   0.2500	0.1702	0.1702
+47	pclfn_KNE3	   0.1944	0.0964	0.0964
+
+Лучшая модель: clf_NB2
+                       precision    recall  f1-score   support
+         insomnia_now     1.0000    0.9167    0.9565        12
+sleep_duration_report     1.0000    1.0000    1.0000        12
+sleep_schedule_report     0.8571    1.0000    0.9231        12
+              welcome     1.0000    1.0000    1.0000        12
+                other     1.0000    0.9167    0.9565        12
+              goodbye     1.0000    1.0000    1.0000        12
+             accuracy                         0.9722        72
+            macro avg     0.9762    0.9722    0.9727        72
+         weighted avg     0.9762    0.9722    0.9727        72
+         
+Ошибок: 2 из 72
+text	intent	pred_intent
+0	проснулся среди ночи и больше не уснул	insomnia_now	sleep_schedule_report
+1	подскажи рецепт омлета	other	sleep_schedule_report
